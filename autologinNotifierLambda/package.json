@@ -1,0 +1,16 @@
+{
+  "name": "autologin-lambda-googlechat-notifador",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "aws-sdk": "2.631.0",
+    "jest": "25.4.0"
+  },
+  "dependencies": {
+    "aws-xray-sdk-core": "1.1.2",
+    "node-fetch": "^2.6.0"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

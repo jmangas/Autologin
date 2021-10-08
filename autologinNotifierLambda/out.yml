@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: The autologin AWS Lambda application
+Resources:
+  function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://autologin-lambda-artifacts-5dcf9bbb67346372/79262820599a38397535be4da5338df0
+      Description: Call the AWS Lambda API
+      Timeout: 10
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AWSLambda_ReadOnlyAccess
+      - AWSXrayWriteOnlyAccess
+      Tracing: Active
+      Layers:
+      - Ref: libs
+  libs:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: autologin-lambda-lib
+      Description: Dependencies for the autologin app.
+      ContentUri: s3://autologin-lambda-artifacts-5dcf9bbb67346372/8718b1616619490da7b5b2be2f0ea677
+      CompatibleRuntimes:
+      - nodejs14.x
