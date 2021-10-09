@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: The autologin AWS stack
+Resources:
+  api:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: api
+      TracingEnabled: true
+      OpenApiVersion: 3.0.2
+  register:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: RegisterLambda
+      Handler: index.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://autologin-lambda-artifacts-c83158ff3416981b/110d740ddf1d87b87b517b5530b119d4
+      Description: Call the Register Lambda
+      Timeout: 10
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AWSLambda_ReadOnlyAccess
+      - AWSXrayWriteOnlyAccess
+      Tracing: Active
+      Events:
+        getEndpoint:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: api
+            Path: /
+            Method: GET
+  notifier:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: NotifierLambda
+      Handler: index.handler
+      Runtime: nodejs14.x
+      CodeUri: s3://autologin-lambda-artifacts-c83158ff3416981b/79262820599a38397535be4da5338df0
+      Description: Autologin Notifier Lambda
+      Timeout: 10
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AWSLambda_ReadOnlyAccess
+      - AWSXrayWriteOnlyAccess
+      Tracing: Active
+      Layers:
+      - Ref: libs
+  libs:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: autologin-notifier-lambda-lib
+      Description: Dependencies for the autologin register lambda.
+      ContentUri: s3://autologin-lambda-artifacts-c83158ff3416981b/900d1f1242208f5707b4e07658afad36
+      CompatibleRuntimes:
+      - nodejs14.x
